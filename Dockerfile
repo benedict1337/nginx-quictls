@@ -27,8 +27,7 @@ RUN apk add --no-cache \
         curl-dev \
         lmdb-dev \
         geoip-dev \
-        libmaxminddb-dev \
-        mercurial 
+        libmaxminddb-dev  
 RUN git clone --recursive https://github.com/quictls/openssl --branch openssl-3.1.2+quic /src/openssl 
 
 # ModSecurity
