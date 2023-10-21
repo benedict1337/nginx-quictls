@@ -1,6 +1,6 @@
 FROM alpine:latest as build
 
-ARG BUILD=latest
+ARG BUILD
 ARG NGINX_VERSION=1.25.2
 
 WORKDIR /src

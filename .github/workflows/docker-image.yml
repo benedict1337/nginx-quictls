@@ -1,39 +1,42 @@
-name: Build and Push Docker Image
+name: ci
 
 on:
   push:
     branches:
-      - main
+      - "main"
     paths:
       - Dockerfile
-  pull_request:
-    paths:
-      - Dockerfile
-  workflow_dispatch:
 
 jobs:
-  build:
+  docker:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
-
-    - name: Set up QEMU
-      run: docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-
-    - name: Login to Docker Hub
-      run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-
-    - name: Get Previous Commit
-      id: get_previous_commit
-      run: echo "::set-output name=previous_commit::$(git rev-parse HEAD^1)"
-
-    - name: Tag and Push Previous Commit
-      run: |
-        docker pull benedicthu/nginx-quictls:latest
-        docker tag benedicthu/nginx-quictls:latest benedicthu/nginx-quictls:${{ steps.get_previous_commit.outputs.previous_commit }}
-        docker push benedicthu/nginx-quictls:${{ steps.get_previous_commit.outputs.previous_commit }}
-
-    - name: Build and Push Multi-Platform Docker Image
-      run: docker buildx create --use && docker buildx build --platform linux/amd64,linux/arm64 -t benedicthu/nginx-quictls:latest --push
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        if: ${{ github.event_name != 'pull_request' }}
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Tag and Push Previous Commit
+        if: ${{ github.event_name != 'pull_request' }}
+        run: |
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls:latest
+          docker tag ${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls:latest ${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls:${{ steps.get_previous_commit.outputs.previous_commit }}
+          docker image rm ${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls:latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls:${{ steps.get_previous_commit.outputs.previous_commit }}
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        if: ${{ github.event_name != 'pull_request' }}
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls:latest
+        build-args: |
+          "BUILD=${{ github.sha }}"
