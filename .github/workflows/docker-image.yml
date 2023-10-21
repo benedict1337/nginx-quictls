@@ -24,10 +24,11 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Tag and Push Previous Commit
         run: |
+          previous_commit=$(git log -n1 --format="%h")
           docker pull ${{ secrets.DOCKER_USERNAME }}/nginx-quictls:latest
-          docker tag ${{ secrets.DOCKER_USERNAME }}/nginx-quictls:latest ${{ secrets.DOCKER_USERNAME }}/nginx-quictls:${{ steps.get_previous_commit.outputs.previous_commit }}
+          docker tag ${{ secrets.DOCKER_USERNAME }}/nginx-quictls:latest ${{ secrets.DOCKER_USERNAME }}/nginx-quictls:$previous_commit
           docker image rm ${{ secrets.DOCKER_USERNAME }}/nginx-quictls:latest
-          docker push ${{ secrets.DOCKER_USERNAME }}/nginx-quictls:${{ steps.get_previous_commit.outputs.previous_commit }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/nginx-quictls:$previous_commit
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
