@@ -1,7 +1,7 @@
 FROM alpine:latest as build
 
 ARG BUILD
-ARG NGINX_VERSION=1.25.2
+ENV NGINX_VERSION=1.25.2
 
 WORKDIR /src
 
@@ -151,7 +151,8 @@ RUN mkdir -p /var/log/nginx/ \
 
 LABEL description="NGINX Docker built with QuicTLS" \
       maintainer="Bence Kócsi <info@benedict.systems>" \
-      openssl="QuicTLS"
+      openssl="QuicTLS" \
+      nginx="nginx-$NGINX_VERSION"
 
 EXPOSE 80 443 443/udp
 
