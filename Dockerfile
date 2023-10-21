@@ -5,6 +5,8 @@ ARG NGINX_VERSION=1.25.2
 
 WORKDIR /src
 
+# Install the required packages
+
 RUN apk add --no-cache \
         ca-certificates \
         build-base \ 
@@ -28,6 +30,9 @@ RUN apk add --no-cache \
         libmaxminddb-dev \
         mercurial 
 RUN git clone --recursive https://github.com/quictls/openssl --branch openssl-3.1.2+quic /src/openssl 
+
+# ModSecurity
+
 RUN (git clone --recursive https://github.com/SpiderLabs/ModSecurity /src/ModSecurity \
         && cd /src/ModSecurity \
         && /src/ModSecurity/build.sh \
@@ -35,11 +40,17 @@ RUN (git clone --recursive https://github.com/SpiderLabs/ModSecurity /src/ModSec
         && make -j "$(nproc)" \
         && make -j "$(nproc)" install \
         && strip -s /usr/local/modsecurity/lib/libmodsecurity.so.3) 
+
+# Modules
+
 RUN (git clone --recursive https://github.com/google/ngx_brotli /src/ngx_brotli \
         && git clone --recursive https://github.com/openresty/headers-more-nginx-module /src/headers-more-nginx-module \
         && git clone --recursive https://github.com/nginx/njs /src/njs \
         && git clone --recursive https://github.com/SpiderLabs/ModSecurity-nginx /src/ModSecurity-nginx \
         && git clone --recursive https://github.com/leev/ngx_http_geoip2_module /src/ngx_http_geoip2_module) 
+    
+# Nginx
+
 RUN (wget https://nginx.org/download/nginx-"$NGINX_VERSION".tar.gz -O - | tar xzC /src \
         && wget https://raw.githubusercontent.com/nginx-modules/ngx_http_tls_dyn_size/master/nginx__dynamic_tls_records_1.25.1%2B.patch -O /src/nginx-"$NGINX_VERSION"/dynamic_tls_records.patch \
         && sed -i "s|nginx/|NGINX-QuicTLS/|g" /src/nginx-"$NGINX_VERSION"/src/core/nginx.h \
