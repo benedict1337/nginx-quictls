@@ -149,7 +149,8 @@ RUN mkdir -p /var/log/nginx/ \
 	&& ln -sf /dev/stderr /var/log/nginx/error.log \
     && ln -s /usr/lib/nginx/modules /etc/nginx/modules
 
-LABEL maintainer="Bence Kócsi <info@benedict.systems>"
+LABEL maintainer="Bence Kócsi <info@benedict.systems>" \
+      nginx="nginx-$NGINX_VERSION"
 
 EXPOSE 80 443 443/udp
 
