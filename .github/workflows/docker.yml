@@ -40,9 +40,8 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Get CommitID
-        id: commitid
-        run: echo "git_hash=$(git rev-parse --short=7 HEAD)" >> $GITHUB_COMMITID
+      - name: Get short SHA
+        run: echo "SHORT_SHA=$("${{ github.sha }}".SubString(0, 8))" >> $env:GITHUB_ENV
       - name: Build and push by digest
         id: build
         uses: docker/build-push-action@v5
@@ -53,7 +52,7 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           outputs: type=image,name=${{ env.REGISTRY_IMAGE }},push-by-digest=true,name-canonical=true,push=true
           build-args: |
-            "BUILD=${{ env.commitid }}"
+            "BUILD=${{ env.SHORT_SHA }}"
       - name: Export digest
         run: |
           mkdir -p /tmp/digests
