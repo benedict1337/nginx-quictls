@@ -149,10 +149,8 @@ RUN mkdir -p /var/log/nginx/ \
 	&& ln -sf /dev/stderr /var/log/nginx/error.log \
     && ln -s /usr/lib/nginx/modules /etc/nginx/modules
 
-LABEL description="NGINX Docker built with QuicTLS" \
-      maintainer="Bence Kócsi <info@benedict.systems>" \
-      openssl="QuicTLS" \
-      nginx="nginx-$NGINX_VERSION"
+LABEL maintainer="Bence Kócsi <info@benedict.systems>" \
+      openssl="QuicTLS" 
 
 EXPOSE 80 443 443/udp
 
