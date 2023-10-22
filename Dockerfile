@@ -27,8 +27,7 @@ RUN apk add --no-cache \
         curl-dev \
         lmdb-dev \
         geoip-dev \
-        libmaxminddb-dev \
-        mercurial
+        libmaxminddb-dev 
 RUN git clone --recursive https://github.com/quictls/openssl --branch openssl-3.1.2+quic /src/openssl 
 
 # ModSecurity
@@ -45,7 +44,7 @@ RUN (git clone --recursive https://github.com/SpiderLabs/ModSecurity /src/ModSec
 
 RUN (git clone --recursive https://github.com/google/ngx_brotli /src/ngx_brotli \
         && git clone --recursive https://github.com/openresty/headers-more-nginx-module /src/headers-more-nginx-module \
-        && hg clone http://hg.nginx.org/njs /src/njs \
+        && git clone --recursive https://github.com/nginx/njs /src/njs \
         && git clone --recursive https://github.com/SpiderLabs/ModSecurity-nginx /src/ModSecurity-nginx \
         && git clone --recursive https://github.com/leev/ngx_http_geoip2_module /src/ngx_http_geoip2_module) 
     
