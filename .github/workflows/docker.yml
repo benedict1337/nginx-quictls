@@ -6,7 +6,7 @@ on:
       - latest
     paths:
       - Dockerfile
-      
+
 env:
   REGISTRY_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls
 
@@ -50,7 +50,7 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           outputs: type=image,name=${{ env.REGISTRY_IMAGE }},push-by-digest=true,name-canonical=true,push=true
           build-args: |
-            "BUILD=${{ GITHUB_SHA }}"
+            "BUILD=${{ github.sha }}"
       - name: Export digest
         run: |
           mkdir -p /tmp/digests
