@@ -3,10 +3,12 @@ name: ci
 on:
   push:
     branches:
-      - "test"
+      - latest
+    paths:
+      - Dockerfile
 
 env:
-  REGISTRY_IMAGE: benedicthu/nginx-quictls
+  REGISTRY_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls
 
 jobs:
   build:
@@ -28,6 +30,8 @@ jobs:
           images: ${{ env.REGISTRY_IMAGE }}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64,arm/v7
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Login to Docker Hub
@@ -35,6 +39,9 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Get CommitID
+        id: commitid
+        run: echo "commitid=$(git rev-parse --short=7 HEAD)" >> $GITHUB_COMMITID
       - name: Build and push by digest
         id: build
         uses: docker/build-push-action@v5
@@ -43,6 +50,8 @@ jobs:
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
           outputs: type=image,name=${{ env.REGISTRY_IMAGE }},push-by-digest=true,name-canonical=true,push=true
+          build-args: |
+            "BUILD=${{ env.commitid }}"
       - name: Export digest
         run: |
           mkdir -p /tmp/digests
