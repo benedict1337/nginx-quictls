@@ -6,7 +6,7 @@ on:
       - latest
     paths:
       - Dockerfile
-    workflow_dispatch:
+  workflow_dispatch:
 env:
   REGISTRY_IMAGES: |
    ${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls
