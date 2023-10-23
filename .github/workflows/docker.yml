@@ -8,8 +8,7 @@ on:
       - Dockerfile
   workflow_dispatch:
 env:
-  REGISTRY_IMAGES: |
-   ${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls
+  REGISTRY_IMAGES: ${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls
 
 
 jobs:
@@ -49,7 +48,9 @@ jobs:
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
           push: ${{ github.event_name != 'pull_request' }}
-          outputs: type=image,name=${{ env.REGISTRY_IMAGES }},cache-from=type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls:latest,cache-to=type=inline,push-by-digest=true,name-canonical=true,push=true
+          outputs: type=image,name=${{ env.REGISTRY_IMAGES }},push-by-digest=true,name-canonical=true,push=true
+          cache-from: type=registry,ref=docker.io/${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls:latest
+          cache-to: type=inline
           build-args: |
             "BUILD=${{ github.sha }}"
       - name: Export digest
