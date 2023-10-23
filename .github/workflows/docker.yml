@@ -49,9 +49,7 @@ jobs:
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
           push: ${{ github.event_name != 'pull_request' }}
-          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls:latest
-          cache-to: type=inline
-          outputs: type=image,name=${{ env.REGISTRY_IMAGES }},push-by-digest=true,name-canonical=true,push=true
+          outputs: type=image,name=${{ env.REGISTRY_IMAGES }},cache-from=type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls:latest,cache-to=type=inline,push-by-digest=true,name-canonical=true,push=true
           build-args: |
             "BUILD=${{ github.sha }}"
       - name: Export digest
