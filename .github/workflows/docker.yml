@@ -57,7 +57,7 @@ jobs:
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
           push: ${{ github.event_name != 'pull_request' }}
-          name: |
+          tags: |
             ${{ env.REGISTRY_IMAGES }}
           outputs: type=image,push-by-digest=true,name-canonical=true,push=true
           cache-from: type=registry,ref=docker.io/${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls:latest
