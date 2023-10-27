@@ -46,10 +46,8 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: benedicthun
+          username: ${{ github.repository_owner }}
           password: ${{ secrets.REPO_TOKEN }}
-      - name: Build and push by digest
-          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push by digest (Docker Hub)
         id: build
         uses: docker/build-push-action@v5
