@@ -54,9 +54,9 @@ RUN (git clone --recursive https://github.com/google/ngx_brotli /src/ngx_brotli 
 
 RUN (wget https://nginx.org/download/nginx-"$NGINX_VERSION".tar.gz -O - | tar xzC /src \
         && wget https://raw.githubusercontent.com/nginx-modules/ngx_http_tls_dyn_size/master/nginx__dynamic_tls_records_1.25.1%2B.patch -O /src/nginx-"$NGINX_VERSION"/dynamic_tls_records.patch \
-        && sed -i "s|nginx/|NGINX-QuicTLS/|g" /src/nginx-"$NGINX_VERSION"/src/core/nginx.h \
-        && sed -i "s|Server: nginx|Server: NGINX-QuicTLS|g" /src/nginx-"$NGINX_VERSION"/src/http/ngx_http_header_filter_module.c \
-        && sed -i "s|<hr><center>nginx</center>|<hr><center>NGINX-QuicTLS</center>|g" /src/nginx-"$NGINX_VERSION"/src/http/ngx_http_special_response.c \
+        && sed -i "s|nginx/|NGINX-QuicTLS with ModSec/|g" /src/nginx-"$NGINX_VERSION"/src/core/nginx.h \
+        && sed -i "s|Server: nginx|Server: NGINX-QuicTLS with ModSec|g" /src/nginx-"$NGINX_VERSION"/src/http/ngx_http_header_filter_module.c \
+        && sed -i "s|<hr><center>nginx</center>|<hr><center>NGINX-QuicTLS with ModSec</center>|g" /src/nginx-"$NGINX_VERSION"/src/http/ngx_http_special_response.c \
         && cd /src/nginx-"$NGINX_VERSION" \
         && patch -p1 < dynamic_tls_records.patch) 
 RUN cd /src/nginx-$NGINX_VERSION \

@@ -57,7 +57,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           push: ${{ github.event_name != 'pull_request' }}
           outputs: type=image,name=${{ env.DOCKER_IMAGE }},push-by-digest=true,name-canonical=true,push=true
-          cache-from: type=registry,ref=docker.io/${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls:latest
+          cache-from: type=registry,ref=docker.io/${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls:without-modsec
           cache-to: type=inline
           build-args: |
             "BUILD=${{ github.sha }}"
@@ -70,35 +70,23 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           push: ${{ github.event_name != 'pull_request' }}
           outputs: type=image,name=${{ env.GHCR_IMAGE }},push-by-digest=true,name-canonical=true,push=true
-          cache-from: type=registry,ref=docker.io/${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls:latest
+          cache-from: type=registry,ref=docker.io/${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls:without-modsec
           cache-to: type=inline
           build-args: |
             "BUILD=${{ github.sha }}"
-      - name: Export digest (Docker Hub)
+      - name: Export digest
         run: |
           mkdir -p /tmp/digests
           digest="${{ steps.build.outputs.digest }}"
-          touch "/tmp/digests/${digest#sha256:}"    
-      - name: Export digest (GitHub Container Registry)
-        run: |
-          mkdir -p /tmp/digests_ghcr
-          digest="${{ steps.build-ghcr.outputs.digest }}"
-          touch "/tmp/digests_ghcr/${digest#sha256:}"      
-      - name: Upload digest (Docker Hub)
+          touch "/tmp/digests/${digest#sha256:}"         
+      - name: Upload digest
         uses: actions/upload-artifact@v3
         with:
           name: digests
           path: /tmp/digests/*
           if-no-files-found: error
           retention-days: 1
-      - name: Upload digest (GitHub Container Registry)
-        uses: actions/upload-artifact@v3
-        with:
-          name: digests
-          path: /tmp/digests_ghcr/*
-          if-no-files-found: error
-          retention-days: 1
-  
+
 
   merge:
     runs-on: ubuntu-latest
@@ -110,11 +98,6 @@ jobs:
         with:
           name: digests
           path: /tmp/digests
-      - name: Download digests (GitHub Container Registry)
-        uses: actions/download-artifact@v3
-        with:
-          name: digests
-          path: /tmp/digests_ghcr
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Docker meta
@@ -134,20 +117,18 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.REPO_TOKEN }}
       - name: Create manifest list and push (Docker Hub)
         working-directory: /tmp/digests
         run: |
           docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
             $(printf '${{ env.DOCKER_IMAGE }}@sha256:%s ' *)  
       - name: Create manifest list and push (GitHub Container Registry)
-        working-directory: /tmp/digests_ghcr
+        working-directory: /tmp/digests
         run: |
           docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
             $(printf '${{ env.GHCR_IMAGE }}@sha256:%s ' *)  
-      - name: Inspect image (Docker Hub)
+      - name: Inspect images
         run: |
           docker buildx imagetools inspect ${{ env.DOCKER_IMAGE }}:${{ steps.meta.outputs.version }}
-      - name: Inspect image (GitHub Container Registry)
-        run: |
-          docker buildx imagetools inspect ${{ env.GHCR_IMAGE }}:${{ steps.meta.outputs.version }} 
+          docker buildx imagetools inspect ${{ env.GHCR_IMAGE }}:${{ steps.meta.outputs.version }}
