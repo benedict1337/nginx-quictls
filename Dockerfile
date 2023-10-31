@@ -1,7 +1,6 @@
 FROM alpine:latest as build
 
 ARG BUILD
-ENV NGINX_VERSION=1.25.2
 
 WORKDIR /src
 
@@ -27,10 +26,11 @@ RUN apk add --no-cache \
         curl-dev \
         lmdb-dev \
         geoip-dev \
-        libmaxminddb-dev 
+        libmaxminddb-dev \
+        curl
 
    
-RUN git clone --recursive https://github.com/quictls/openssl --branch openssl-3.1.2+quic /src/openssl 
+RUN git clone --recursive https://github.com/quictls/openssl --branch openssl-3.1.4+quic /src/openssl 
 
 # ModSecurity
 
@@ -49,17 +49,19 @@ RUN (git clone --recursive https://github.com/google/ngx_brotli /src/ngx_brotli 
         && git clone --recursive https://github.com/nginx/njs /src/njs \
         && git clone --recursive https://github.com/SpiderLabs/ModSecurity-nginx /src/ModSecurity-nginx \
         && git clone --recursive https://github.com/leev/ngx_http_geoip2_module /src/ngx_http_geoip2_module) 
-    
+
 # Nginx
 
-RUN (wget https://nginx.org/download/nginx-"$NGINX_VERSION".tar.gz -O - | tar xzC /src \
-        && wget https://raw.githubusercontent.com/nginx-modules/ngx_http_tls_dyn_size/master/nginx__dynamic_tls_records_1.25.1%2B.patch -O /src/nginx-"$NGINX_VERSION"/dynamic_tls_records.patch \
-        && sed -i "s|nginx/|NGINX-QuicTLS with ModSec/|g" /src/nginx-"$NGINX_VERSION"/src/core/nginx.h \
-        && sed -i "s|Server: nginx|Server: NGINX-QuicTLS with ModSec|g" /src/nginx-"$NGINX_VERSION"/src/http/ngx_http_header_filter_module.c \
-        && sed -i "s|<hr><center>nginx</center>|<hr><center>NGINX-QuicTLS with ModSec</center>|g" /src/nginx-"$NGINX_VERSION"/src/http/ngx_http_special_response.c \
-        && cd /src/nginx-"$NGINX_VERSION" \
+RUN (NGINX_MAINLINE_LATEST=$(curl -sSL https://benedict.systems/nginx-latest.php?mainline) \
+        && wget https://nginx.org/download/nginx-$NGINX_MAINLINE_LATEST.tar.gz -O - | tar xzC /src \
+        && mv /src/nginx-$NGINX_MAINLINE_LATEST /src/nginx \
+        && wget https://raw.githubusercontent.com/nginx-modules/ngx_http_tls_dyn_size/master/nginx__dynamic_tls_records_1.25.1%2B.patch -O /src/nginx/dynamic_tls_records.patch \
+        && sed -i "s|nginx/|NGINX-QuicTLS with ModSec/|g" /src/nginx/src/core/nginx.h \
+        && sed -i "s|Server: nginx|Server: NGINX-QuicTLS with ModSec|g" /src/nginx/src/http/ngx_http_header_filter_module.c \
+        && sed -i "s|<hr><center>nginx</center>|<hr><center>NGINX-QuicTLS with ModSec</center>|g" /src/nginx/src/http/ngx_http_special_response.c \
+        && cd /src/nginx \
         && patch -p1 < dynamic_tls_records.patch) 
-RUN cd /src/nginx-$NGINX_VERSION \
+RUN cd /src/nginx \
     && ./configure \
         --build=${BUILD} \
         --prefix=/etc/nginx \
@@ -86,9 +88,9 @@ RUN cd /src/nginx-$NGINX_VERSION \
         --without-select_module \
         --with-openssl="/src/openssl" \
         --with-openssl-opt="no-ssl3 no-ssl3-method no-weak-ssl-ciphers" \
-        --with-mail \
+        --with-mail=dynamic \
         --with-mail_ssl_module \
-        --with-stream \
+        --with-stream=dynamic \
         --with-stream_ssl_module \
         --with-stream_ssl_preread_module \
         --with-stream_realip_module \
@@ -110,7 +112,7 @@ RUN cd /src/nginx-$NGINX_VERSION \
         --add-dynamic-module=/src/ngx_http_geoip2_module \
     && make -j "$(nproc)" \
     && make -j "$(nproc)" install \
-    && rm /src/nginx-$NGINX_VERSION/*.patch \
+    && rm /src/nginx/*.patch \
     && strip -s /usr/sbin/nginx \
     && strip -s /usr/lib/nginx/modules/*.so
 
