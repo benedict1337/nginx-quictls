@@ -9,7 +9,6 @@ on:
       - latest
     paths:
       - Dockerfile
-      - Dockerfile.without-modsec
   workflow_dispatch:
 env:
   DOCKER_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls
