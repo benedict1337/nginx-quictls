@@ -14,8 +14,8 @@ on:
 env:
   DOCKER_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls
   GHCR_IMAGE: ghcr.io/${{ github.repository }}
-  DOCKER_WITHOUT_MODSEC_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls:without-modsec
-  GHCR_WITHOUT_MODSEC_IMAGE: ghcr.io/${{ github.repository }}:without-modsec
+  DOCKER_WITHOUT_MODSEC_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls
+  GHCR_WITHOUT_MODSEC_IMAGE: ghcr.io/${{ github.repository }}
 
 jobs:
   build:
@@ -166,12 +166,12 @@ jobs:
         working-directory: /tmp/digests
         run: |
           docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-            $(printf '${{ env.DOCKER_WITHOUT_MODSEC_IMAGE }}@sha256:%s ' *)  
+            $(printf '${{ env.DOCKER_WITHOUT_MODSEC_IMAGE }}:without-modsec@sha256:%s ' *)  
       - name: Create manifest list and push (GitHub Container Registry)
         working-directory: /tmp/digests
         run: |
           docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-            $(printf '${{ env.GHCR_WITHOUT_MODSEC_IMAGE }}@sha256:%s ' *)  
+            $(printf '${{ env.GHCR_WITHOUT_MODSEC_IMAGE }}:without-modsec@sha256:%s ' *)  
       - name: Inspect images
         run: |
           docker buildx imagetools inspect ${{ env.DOCKER_IMAGE }}:${{ steps.meta.outputs.version }}
