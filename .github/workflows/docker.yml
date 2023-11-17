@@ -160,22 +160,22 @@ jobs:
       - name: Create manifest list and push (Docker Hub)
         working-directory: /tmp/digests
         run: |
-          docker buildx imagetools create --tag ${{ env.DOCKER_IMAGE }}:latest $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+          docker buildx imagetools create --tag ${{ env.DOCKER_IMAGE }}:latest \
             $(printf '${{ env.DOCKER_IMAGE }}@sha256:%s ' *)  
       - name: Create manifest list and push (GitHub Container Registry)
         working-directory: /tmp/digests
         run: |
-          docker buildx imagetools create --tag ${{ env.GHCR_IMAGE }}:latest $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+          docker buildx imagetools create --tag ${{ env.GHCR_IMAGE }}:latest \
             $(printf '${{ env.GHCR_IMAGE }}@sha256:%s ' *)  
       - name: Create manifest list and push (Docker Hub)
         working-directory: /tmp/digests
         run: |
-          docker buildx imagetools create --tag ${{ env.DOCKER_WITHOUT_MODSEC_IMAGE }}:without-modsec $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+          docker buildx imagetools create --tag ${{ env.DOCKER_WITHOUT_MODSEC_IMAGE }}:without-modsec \
             $(printf '${{ env.DOCKER_WITHOUT_MODSEC_IMAGE }}@sha256:%s ' *)  
       - name: Create manifest list and push (GitHub Container Registry)
         working-directory: /tmp/digests
         run: |
-          docker buildx imagetools create --tag ${{ env.DOCKER_WITHOUT_MODSEC_IMAGE }}:without-modsec $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+          docker buildx imagetools create --tag ${{ env.DOCKER_WITHOUT_MODSEC_IMAGE }}:without-modsec \
             $(printf '${{ env.GHCR_WITHOUT_MODSEC_IMAGE }}@sha256:%s ' *)  
       - name: Inspect images
         run: |
