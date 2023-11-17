@@ -68,6 +68,7 @@ jobs:
           context: .
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ env.DOCKER_IMAGE }}:latest
           outputs: type=image,name=${{ env.DOCKER_IMAGE }}:latest,push-by-digest=true,name-canonical=true,push=true
           cache-from: type=registry,ref=docker.io/${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls:latest
           cache-to: type=inline
@@ -80,6 +81,7 @@ jobs:
           context: .
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ env.GHCR_IMAGE }}:latest
           outputs: type=image,name=${{ env.GHCR_IMAGE }}:latest,push-by-digest=true,name-canonical=true,push=true
           cache-from: type=registry,ref=docker.io/${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls:latest
           cache-to: type=inline
@@ -93,6 +95,7 @@ jobs:
           file: Dockerfile.without-modsec
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ env.DOCKER_WITHOUT_MODSEC_IMAGE }}:without-modsec
           outputs: type=image,name=${{ env.DOCKER_WITHOUT_MODSEC_IMAGE }}:without-modsec,push-by-digest=true,name-canonical=true,push=true
           cache-from: type=registry,ref=docker.io/${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls:without-modsec
           cache-to: type=inline
@@ -106,6 +109,7 @@ jobs:
           file: Dockerfile.without-modsec
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ env.GHCR_WITHOUT_MODSEC_IMAGE }}:without-modsec
           outputs: type=image,name=${{ env.GHCR_WITHOUT_MODSEC_IMAGE }}:without-modsec,push-by-digest=true,name-canonical=true,push=true
           cache-from: type=registry,ref=docker.io/${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls:without-modsec
           cache-to: type=inline
