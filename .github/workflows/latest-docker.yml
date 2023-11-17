@@ -124,12 +124,12 @@ jobs:
       - name: Create manifest list and push (Docker Hub)
         working-directory: /tmp/digests
         run: |
-          docker buildx imagetools create --tag ${{ env.DOCKER_IMAGE }}:latest \
+          docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
             $(printf '${{ env.DOCKER_IMAGE }}@sha256:%s ' *)  
       - name: Create manifest list and push (GitHub Container Registry)
         working-directory: /tmp/digests
         run: |
-          docker buildx imagetools create --tag ${{ env.GHCR_IMAGE }}:latest \
+          docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
             $(printf '${{ env.GHCR_IMAGE }}@sha256:%s ' *)  
       - name: Inspect images
         run: |
