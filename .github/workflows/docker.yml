@@ -7,6 +7,9 @@ on:
   push:
     branches:
       - latest
+    tags:
+      - latest
+      - without-modsec
     paths:
       - Dockerfile
       - Dockerfile.without-modsec
@@ -38,6 +41,14 @@ jobs:
             ${{ env.GHCR_IMAGE }}
             ${{ env.DOCKER_WITHOUT_MODSEC_IMAGE }}
             ${{ env.GHCR_WITHOUT_MODSEC_IMAGE }}
+          tags: |
+            type=schedule
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
         with:
