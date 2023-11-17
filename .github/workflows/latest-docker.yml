@@ -1,4 +1,4 @@
-name: ci
+name: NGINX-QuicTLS with ModSecurity
 
 on:
   schedule:
@@ -7,9 +7,9 @@ on:
   push:
     branches:
       - latest
-      - without-modsec
     paths:
       - Dockerfile
+  workflow_dispatch:
 env:
   DOCKER_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls
   GHCR_IMAGE: ghcr.io/${{ github.repository }}
