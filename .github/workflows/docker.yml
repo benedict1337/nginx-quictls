@@ -14,8 +14,8 @@ on:
 env:
   DOCKER_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls
   GHCR_IMAGE: ghcr.io/${{ github.repository }}
-  DOCKER_WITHOUT_MODSEC_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls:without-modsec
-  GHCR_WITHOUT_MODSEC_IMAGE: ghcr.io/${{ github.repository }}:without-modsec
+  DOCKER_WITHOUT_MODSEC_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls
+  GHCR_WITHOUT_MODSEC_IMAGE: ghcr.io/${{ github.repository }}
 
 jobs:
   build:
@@ -38,9 +38,6 @@ jobs:
             ${{ env.GHCR_IMAGE }}
             ${{ env.DOCKER_WITHOUT_MODSEC_IMAGE }}
             ${{ env.GHCR_WITHOUT_MODSEC_IMAGE }}
-          versions: |
-            latest
-            without-modsec
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
         with:
@@ -66,7 +63,7 @@ jobs:
           context: .
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
-          outputs: type=image,name=${{ env.DOCKER_IMAGE }},push-by-digest=true,name-canonical=true,push=true
+          outputs: type=image,name=${{ env.DOCKER_IMAGE }},version=latest,push-by-digest=true,name-canonical=true,push=true
           cache-from: type=registry,ref=docker.io/${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls:latest
           cache-to: type=inline
           build-args: |
@@ -78,7 +75,7 @@ jobs:
           context: .
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
-          outputs: type=image,name=${{ env.GHCR_IMAGE }},push-by-digest=true,name-canonical=true,push=true
+          outputs: type=image,name=${{ env.GHCR_IMAGE }},version=latest,push-by-digest=true,name-canonical=true,push=true
           cache-from: type=registry,ref=docker.io/${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls:latest
           cache-to: type=inline
           build-args: |
@@ -91,7 +88,7 @@ jobs:
           file: Dockerfile.without-modsec
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
-          outputs: type=image,name=${{ env.DOCKER_WITHOUT_MODSEC_IMAGE }},push-by-digest=true,name-canonical=true,push=true
+          outputs: type=image,name=${{ env.DOCKER_WITHOUT_MODSEC_IMAGE }},version=without-modsec,push-by-digest=true,name-canonical=true,push=true
           cache-from: type=registry,ref=docker.io/${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls:without-modsec
           cache-to: type=inline
           build-args: |
@@ -104,7 +101,7 @@ jobs:
           file: Dockerfile.without-modsec
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
-          outputs: type=image,name=${{ env.GHCR_WITHOUT_MODSEC_IMAGE }},push-by-digest=true,name-canonical=true,push=true
+          outputs: type=image,name=${{ env.GHCR_WITHOUT_MODSEC_IMAGE }},version=without-modsec,push-by-digest=true,name-canonical=true,push=true
           cache-from: type=registry,ref=docker.io/${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls:without-modsec
           cache-to: type=inline
           build-args: |
