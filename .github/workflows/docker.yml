@@ -14,8 +14,8 @@ on:
 env:
   DOCKER_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls
   GHCR_IMAGE: ghcr.io/${{ github.repository }}
-  DOCKER_WITHOUT_MODSEC_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls
-  GHCR_WITHOUT_MODSEC_IMAGE: ghcr.io/${{ github.repository }}
+  DOCKER_WITHOUT_MODSEC_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls:without-modsec
+  GHCR_WITHOUT_MODSEC_IMAGE: ghcr.io/${{ github.repository }}:without-modsec
 
 jobs:
   build:
@@ -34,10 +34,13 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ${{ env.DOCKER_IMAGE }}:latest
-            ${{ env.GHCR_IMAGE }}:latest
-            ${{ env.DOCKER_WITHOUT_MODSEC_IMAGE }}:without-modsec
-            ${{ env.GHCR_WITHOUT_MODSEC_IMAGE }}:without-modsec
+            ${{ env.DOCKER_IMAGE }}
+            ${{ env.GHCR_IMAGE }}
+            ${{ env.DOCKER_WITHOUT_MODSEC_IMAGE }}
+            ${{ env.GHCR_WITHOUT_MODSEC_IMAGE }}
+          versions: |
+            latest
+            without-modsec
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
         with:
