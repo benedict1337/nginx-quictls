@@ -111,9 +111,9 @@ COPY --from=build /usr/lib/nginx /usr/lib/nginx
 COPY --from=build /usr/local/lib/perl5  /usr/local/lib/perl5
 COPY --from=build /usr/lib/perl5/core_perl/perllocal.pod    /usr/lib/perl5/core_perl/perllocal.pod
 
-COPY ../assets/nginx.conf /etc/nginx/nginx.conf
-COPY ../assets/default.conf /etc/nginx/conf.d/default.conf
-COPY ../assets/index.html /etc/nginx/html/index.html
+COPY assets/nginx.conf /etc/nginx/nginx.conf
+COPY assets/default.conf /etc/nginx/conf.d/default.conf
+COPY assets/index.html /etc/nginx/html/index.html
 
 RUN addgroup -S nginx \
 	&& adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx nginx

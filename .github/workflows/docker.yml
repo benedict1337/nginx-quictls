@@ -9,6 +9,7 @@ on:
       - latest
     paths:
       - Dockerfile
+      - Dockerfile.without-modsec
   workflow_dispatch:
 env:
   DOCKER_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls
@@ -83,7 +84,8 @@ jobs:
         id: build-without-modsec
         uses: docker/build-push-action@v5
         with:
-          context: ./wothout-modsec
+          context: .
+          file: Dockerfile.without-modsec
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
           outputs: type=image,name=${{ env.DOCKER_WITHOUT_MODSEC_IMAGE }},push-by-digest=true,name-canonical=true,push=true
@@ -95,7 +97,8 @@ jobs:
         id: build-ghcr-without-modsec
         uses: docker/build-push-action@v5
         with:
-          context: ./without-modsec
+          context: .
+          file: Dockerfile.without-modsec
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
           outputs: type=image,name=${{ env.GHCR_WITHOUT_MODSEC_IMAGE }},push-by-digest=true,name-canonical=true,push=true
