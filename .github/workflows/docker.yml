@@ -34,11 +34,6 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ${{ env.DOCKER_IMAGE }}
-            ${{ env.GHCR_IMAGE }}
-            ${{ env.DOCKER_WITHOUT_MODSEC_IMAGE }}
-            ${{ env.GHCR_WITHOUT_MODSEC_IMAGE }}
-          tags: |
             ${{ env.DOCKER_IMAGE }}:latest
             ${{ env.GHCR_IMAGE }}:latest
             ${{ env.DOCKER_WITHOUT_MODSEC_IMAGE }}:without-modsec
