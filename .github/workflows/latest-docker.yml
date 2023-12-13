@@ -146,7 +146,7 @@ jobs:
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta-without-modsec.outputs.labels }}
           outputs: type=image,name=${{ env.DOCKER_IMAGE }},push-by-digest=true,name-canonical=true,push=true
-          cache-from: type=registry,ref=docker.io/${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls:without-modsec
+          cache-from: type=registry,ref=docker.io/${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls:latest-without_modsec
           cache-to: type=inline
           build-args: |
             "BUILD=${{ github.sha }}"
@@ -159,7 +159,7 @@ jobs:
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta-without-modsec.outputs.labels }}
           outputs: type=image,name=${{ env.GHCR_IMAGE }},push-by-digest=true,name-canonical=true,push=true
-          cache-from: type=registry,ref=docker.io/${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls:without-modsec
+          cache-from: type=registry,ref=docker.io/${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls:latest-without_modsec
           cache-to: type=inline
           build-args: |
             "BUILD=${{ github.sha }}"
@@ -196,6 +196,10 @@ jobs:
           images: |
             ${{ env.DOCKER_IMAGE }}
             ${{ env.GHCR_IMAGE }}
+          tags: |
+            type=schedule,pattern=latest,enable=true,priority=1000
+            type=ref,event=branch,enable=true,priority=600
+            type=ref,event=tag,enable=true,priority=600
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
@@ -241,6 +245,10 @@ jobs:
           images: |
             ${{ env.DOCKER_IMAGE }}
             ${{ env.GHCR_IMAGE }}
+          tags: |
+            type=schedule,pattern=latest,suffix=-without_modsec,enable=true,priority=1000
+            type=ref,event=branch,enable=true,suffix=-without_modsec,priority=600
+            type=ref,event=tag,enable=true,suffix=-without_modsec,priority=600
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
