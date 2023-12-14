@@ -27,6 +27,7 @@ RUN apk add --no-cache \
         lmdb-dev \
         geoip-dev \
         libmaxminddb-dev \
+        libfuzzy2-dev \
         curl
 
    
@@ -35,6 +36,8 @@ RUN git clone --recursive https://github.com/quictls/openssl --branch openssl-3.
 # ModSecurity
 
 RUN (git clone --recursive https://github.com/SpiderLabs/ModSecurity /src/ModSecurity \
+        && sed -i "s|SecRuleEngine.*|SecRuleEngine On|g" /src/ModSecurity/modsecurity.conf-recommended \
+        && sed -i "s|unicode.mapping|/etc/nginx/modsec/unicode.mapping|g" /src/ModSecurity/modsecurity.conf-recommended \
         && cd /src/ModSecurity \
         && /src/ModSecurity/build.sh \
         && /src/ModSecurity/configure --with-pcre2 --with-lmdb \
@@ -118,7 +121,7 @@ RUN cd /src/nginx \
 
 FROM python:alpine
 
-COPY --from=build /etc/nginx /etc/nginx
+COPY --from=build /etc/nginx /etc/nginx 
 COPY --from=build /usr/sbin/nginx   /usr/sbin/nginx
 COPY --from=build /usr/lib/nginx /usr/lib/nginx
 COPY --from=build /usr/local/lib/perl5  /usr/local/lib/perl5
@@ -142,16 +145,21 @@ RUN apk add --no-cache \
     yajl \
     libxml2 \ 
     libxslt \
+    libfuzzy2 \
     perl \
     libcurl \
     geoip \
     libmaxminddb-libs 
 RUN mkdir -p /var/log/nginx/ \
+    && mkdir -p /etc/nginx/modsec \
     && touch /var/log/nginx/access.log \
     && touch /var/log/nginx/error.log \
     && ln -sf /dev/stdout /var/log/nginx/access.log \
 	&& ln -sf /dev/stderr /var/log/nginx/error.log \
     && ln -s /usr/lib/nginx/modules /etc/nginx/modules
+
+COPY --from=build /src/ModSecurity/unicode.mapping  /etc/nginx/modsec/unicode.mapping
+COPY --from=build /src/ModSecurity/modsecurity.conf-recommended /etc/nginx/modsec/modsecurity.conf.example
 
 LABEL maintainer="Bence Kócsi <info@benedict.systems>"
 
