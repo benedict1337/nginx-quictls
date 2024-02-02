@@ -39,11 +39,11 @@ RUN apk add --no-cache \
         libfuzzy2-dev 
 
    
-RUN git clone --recursive https://github.com/quictls/openssl --branch $QUICTLS_VER /src/openssl 
+RUN git clone --recursive --branch "$QUICTLS_VER" https://github.com/quictls/openssl /src/openssl 
 
 # ModSecurity
 
-RUN (git clone --recursive https://github.com/SpiderLabs/ModSecurity --branch $MODSEC_VER /src/ModSecurity \
+RUN (git clone --recursive --branch "$MODSEC_VER" https://github.com/SpiderLabs/ModSecurity /src/ModSecurity \
         && sed -i "s|SecRuleEngine.*|SecRuleEngine On|g" /src/ModSecurity/modsecurity.conf-recommended \
         && sed -i "s|unicode.mapping|/etc/nginx/modsec/unicode.mapping|g" /src/ModSecurity/modsecurity.conf-recommended \
         && cd /src/ModSecurity \
@@ -55,11 +55,11 @@ RUN (git clone --recursive https://github.com/SpiderLabs/ModSecurity --branch $M
 
 # Modules
 
-RUN (git clone --recursive https://github.com/google/ngx_brotli --branch $BROTLI_VER /src/ngx_brotli \
-        && git clone --recursive https://github.com/openresty/headers-more-nginx-module --branch $NGX_HEADERS_MORE /src/headers-more-nginx-module \
-        && git clone --recursive https://github.com/nginx/njs --branch $NGX_NJS /src/njs \
-        && git clone --recursive https://github.com/SpiderLabs/ModSecurity-nginx --branch $NGX_MODSEC /src/ModSecurity-nginx \
-        && git clone --recursive https://github.com/leev/ngx_http_geoip2_module --branch $NGX_GEOIP2 /src/ngx_http_geoip2_module) 
+RUN (git clone --recursive --branch "$BROTLI_VER" https://github.com/google/ngx_brotli /src/ngx_brotli \
+        && git clone --recursive --branch "$NGX_HEADERS_MORE" https://github.com/openresty/headers-more-nginx-module /src/headers-more-nginx-module \
+        && git clone --recursive --branch "$NGX_NJS" https://github.com/nginx/njs /src/njs \
+        && git clone --recursive --branch "$NGX_MODSEC" https://github.com/SpiderLabs/ModSecurity-nginx /src/ModSecurity-nginx \
+        && git clone --recursive --branch "$NGX_GEOIP2" https://github.com/leev/ngx_http_geoip2_module /src/ngx_http_geoip2_module) 
 
 # Nginx
 
