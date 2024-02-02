@@ -4,7 +4,6 @@ ARG BUILD
 
 ARG NGX_MAINLINE_VER=1.25.3
 ARG QUICTLS_VER=openssl-3.1.5+quic
-ARG BROTLI_VER=master
 ARG NGX_BROTLI=v1.0.0rc
 ARG NGX_HEADERS_MORE=v0.37rc1
 ARG NGX_NJS=0.8.2
@@ -39,7 +38,7 @@ RUN git clone --recursive --branch "$QUICTLS_VER" https://github.com/quictls/ope
 
 # Modules
 
-RUN (git clone --recursive --branch "$BROTLI_VER" https://github.com/google/ngx_brotli /src/ngx_brotli \
+RUN (git clone --recursive --branch "$NGX_BROTLI" https://github.com/google/ngx_brotli /src/ngx_brotli \
         && git clone --recursive --branch "$NGX_HEADERS_MORE" https://github.com/openresty/headers-more-nginx-module /src/headers-more-nginx-module \
         && git clone --recursive --branch "$NGX_NJS" https://github.com/nginx/njs /src/njs \
         && git clone --recursive --branch "$NGX_GEOIP2" https://github.com/leev/ngx_http_geoip2_module /src/ngx_http_geoip2_module) 

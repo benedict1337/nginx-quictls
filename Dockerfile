@@ -55,7 +55,7 @@ RUN (git clone --recursive --branch "$MODSEC_VER" https://github.com/SpiderLabs/
 
 # Modules
 
-RUN (git clone --recursive --branch "$BROTLI_VER" https://github.com/google/ngx_brotli /src/ngx_brotli \
+RUN (git clone --recursive --branch "$NGX_BROTLI" https://github.com/google/ngx_brotli /src/ngx_brotli \
         && git clone --recursive --branch "$NGX_HEADERS_MORE" https://github.com/openresty/headers-more-nginx-module /src/headers-more-nginx-module \
         && git clone --recursive --branch "$NGX_NJS" https://github.com/nginx/njs /src/njs \
         && git clone --recursive --branch "$NGX_MODSEC" https://github.com/SpiderLabs/ModSecurity-nginx /src/ModSecurity-nginx \
@@ -63,8 +63,8 @@ RUN (git clone --recursive --branch "$BROTLI_VER" https://github.com/google/ngx_
 
 # Nginx
 
-RUN (wget https://nginx.org/download/nginx-$NGX_MAINLINE_VER.tar.gz -O - | tar xzC /src \
-        && mv /src/nginx-$NGX_MAINLINE_VER /src/nginx \
+RUN (wget https://nginx.org/download/nginx-"$NGX_MAINLINE_VER".tar.gz -O - | tar xzC /src \
+        && mv /src/nginx-"$NGX_MAINLINE_VER" /src/nginx \
         && wget https://raw.githubusercontent.com/nginx-modules/ngx_http_tls_dyn_size/master/nginx__dynamic_tls_records_1.25.1%2B.patch -O /src/nginx/dynamic_tls_records.patch \
         && sed -i "s|nginx/|NGINX-QuicTLS with ModSec/|g" /src/nginx/src/core/nginx.h \
         && sed -i "s|Server: nginx|Server: NGINX-QuicTLS with ModSec|g" /src/nginx/src/http/ngx_http_header_filter_module.c \
