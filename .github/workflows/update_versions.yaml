@@ -43,9 +43,6 @@ jobs:
           labels: dependencies
           reviewers: benedict1337
           assignees: benedict1337
-          changes: |
-            Dockerfile
-            Dockerfile.without-modsec
   modsecurity:
     runs-on: ubuntu-latest
     steps:
@@ -75,8 +72,6 @@ jobs:
           labels: dependencies
           reviewers: benedict1337
           assignees: benedict1337
-          changes: |
-            Dockerfile
   quictls:
     runs-on: ubuntu-latest
     steps:
@@ -107,9 +102,6 @@ jobs:
           labels: dependencies
           reviewers: benedict1337
           assignees: benedict1337
-          changes: |
-            Dockerfile
-            Dockerfile.without-modsec
   brotli-module:
     runs-on: ubuntu-latest
     steps:
@@ -140,9 +132,6 @@ jobs:
           labels: dependencies
           reviewers: benedict1337
           assignees: benedict1337
-          changes: |
-            Dockerfile
-            Dockerfile.without-modsec
   headers_more-module:
     runs-on: ubuntu-latest
     steps:
@@ -173,9 +162,6 @@ jobs:
           labels: dependencies
           reviewers: benedict1337
           assignees: benedict1337
-          changes: |
-            Dockerfile
-            Dockerfile.without-modsec
   njs-module:
     runs-on: ubuntu-latest
     steps:
@@ -206,9 +192,6 @@ jobs:
           labels: dependencies
           reviewers: benedict1337
           assignees: benedict1337
-          changes: |
-            Dockerfile
-            Dockerfile.without-modsec
   ngx_modsec-module:
     runs-on: ubuntu-latest
     steps:
@@ -238,8 +221,6 @@ jobs:
           labels: dependencies
           reviewers: benedict1337
           assignees: benedict1337
-          changes: |
-            Dockerfile
   geoip2-module:
     runs-on: ubuntu-latest
     steps:
@@ -270,6 +251,3 @@ jobs:
           labels: dependencies
           reviewers: benedict1337
           assignees: benedict1337
-          changes: |
-            Dockerfile
-            Dockerfile.without-modsec
