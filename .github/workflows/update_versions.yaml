@@ -34,7 +34,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           signoff: true
           delete-branch: true
-          committer: benedict.system - Update BOT <info@benedict.systems>
           commit-message: Update NGINX Mainline version to ${{ steps.update_ngx.outputs.ngx_ver }}
           title: Update NGINX Mainline version to ${{ steps.update_ngx.outputs.ngx_ver }}
           body: Update NGINX Mainline version to ${{ steps.update_ngx.outputs.ngx_ver }}
@@ -63,7 +62,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           signoff: true
           delete-branch: true
-          committer: benedict.system - Update BOT <info@benedict.systems>
           commit-message: Update ModSecurity version to ${{ steps.update_modsec.outputs.modsec_ver }}
           title: Update ModSecurity version to ${{ steps.update_modsec.outputs.modsec_ver }}
           body: Update ModSecurity version to ${{ steps.update_modsec.outputs.modsec_ver }}
@@ -93,7 +91,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           signoff: true
           delete-branch: true
-          committer: benedict.system - Update BOT <info@benedict.systems>
           commit-message: Update QuicTLS version to ${{ steps.update_quictls.outputs.quictls_ver }}
           title: Update QuicTLS version to ${{ steps.update_quictls.outputs.quictls_ver }}
           body: Update QuicTLS version to ${{ steps.update_quictls.outputs.quictls_ver }}
@@ -123,7 +120,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           signoff: true
           delete-branch: true
-          committer: benedict.system - Update BOT <info@benedict.systems>
           commit-message: Update Brotli Module version to ${{ steps.update_brotli.outputs.brotli_ver }}
           title: Update Brotli Module version to ${{ steps.update_brotli.outputs.brotli_ver }}
           body: Update Brotli Module version to ${{ steps.update_brotli.outputs.brotli_ver }}
@@ -153,7 +149,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           signoff: true
           delete-branch: true
-          committer: benedict.system - Update BOT <info@benedict.systems>
           commit-message: Update Headers More Module version to ${{ steps.update_headers_more.outputs.headers_more_ver }}
           title: Update Headers More Module version to ${{ steps.update_headers_more.outputs.headers_more_ver }}
           body: Update Headers More Module version to ${{ steps.update_headers_more.outputs.headers_more_ver }}
@@ -183,7 +178,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           signoff: true
           delete-branch: true
-          committer: benedict.system - Update BOT <info@benedict.systems>
           commit-message: Update NJS Module version to ${{ steps.update_njs.outputs.njs_ver }}
           title: Update NJS Module version to ${{ steps.update_njs.outputs.njs_ver }}
           body: Update NJS Module version to ${{ steps.update_njs.outputs.njs_ver }}
@@ -212,7 +206,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           signoff: true
           delete-branch: true
-          committer: benedict.system - Update BOT <info@benedict.systems>
           commit-message: Update NGINX ModSecurity Module version to ${{ steps.update_ngx_modsec.outputs.ngx_modsec_ver }}
           title: Update NGINX ModSecurity Module version to ${{ steps.update_ngx_modsec.outputs.ngx_modsec_ver }}
           body: Update NGINX ModSecurity Module version to ${{ steps.update_ngx_modsec.outputs.ngx_modsec_ver }}
@@ -242,7 +235,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           signoff: true
           delete-branch: true
-          committer: benedict.system - Update BOT <info@benedict.systems>
           commit-message: Update GeoIP2 Module version to ${{ steps.update_geoip2.outputs.geoip2_ver }}
           title: Update GeoIP2 Module version to ${{ steps.update_geoip2.outputs.geoip2_ver }}
           body: Update GeoIP2 Module version to ${{ steps.update_geoip2.outputs.geoip2_ver }}
