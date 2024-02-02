@@ -5,7 +5,7 @@ ARG BUILD
 ARG NGX_MAINLINE_VER=1.25.3
 ARG QUICTLS_VER=openssl-3.1.5+quic
 ARG MODSEC_VER=v3.0.12
-ARG NGX_BROTLI=v1.0.0rc
+ARG NGX_BROTLI=master
 ARG NGX_HEADERS_MORE=v0.37rc1
 ARG NGX_NJS=0.8.2
 ARG NGX_MODSEC=v1.0.3
@@ -123,7 +123,8 @@ RUN cd /src/nginx \
     && make -j "$(nproc)" \
     && make -j "$(nproc)" install \
     && rm /src/nginx/*.patch \
-    && strip -s /usr/sbin/nginx 
+    && strip -s /usr/sbin/nginx \
+    && strip -s /usr/lib/nginx/modules/*.so
 
 FROM python:alpine
 
