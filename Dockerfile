@@ -3,7 +3,7 @@ FROM alpine:latest as build
 ARG BUILD
 
 ARG NGX_MAINLINE_VER=1.25.3
-ARG QUICTLS_VER=openssl-3.1.4+quic
+ARG QUICTLS_VER=openssl-3.1.5+quic
 ARG MODSEC_VER=3.0.5
 ARG NGX_BROTLI=master
 ARG NGX_HEADERS_MORE=master
