@@ -41,7 +41,6 @@ jobs:
           base: latest
           labels: dependencies
           reviewers: benedict1337
-          assignees: benedict1337
   modsecurity:
     runs-on: ubuntu-latest
     steps:
@@ -69,7 +68,6 @@ jobs:
           base: latest
           labels: dependencies
           reviewers: benedict1337
-          assignees: benedict1337
   quictls:
     runs-on: ubuntu-latest
     steps:
@@ -98,7 +96,6 @@ jobs:
           base: latest
           labels: dependencies
           reviewers: benedict1337
-          assignees: benedict1337
   brotli-module:
     runs-on: ubuntu-latest
     steps:
@@ -127,7 +124,6 @@ jobs:
           base: latest
           labels: dependencies
           reviewers: benedict1337
-          assignees: benedict1337
   headers_more-module:
     runs-on: ubuntu-latest
     steps:
@@ -156,7 +152,6 @@ jobs:
           base: latest
           labels: dependencies
           reviewers: benedict1337
-          assignees: benedict1337
   njs-module:
     runs-on: ubuntu-latest
     steps:
@@ -185,7 +180,6 @@ jobs:
           base: latest
           labels: dependencies
           reviewers: benedict1337
-          assignees: benedict1337
   ngx_modsec-module:
     runs-on: ubuntu-latest
     steps:
@@ -213,7 +207,6 @@ jobs:
           base: latest
           labels: dependencies
           reviewers: benedict1337
-          assignees: benedict1337
   geoip2-module:
     runs-on: ubuntu-latest
     steps:
@@ -242,4 +235,3 @@ jobs:
           base: latest
           labels: dependencies
           reviewers: benedict1337
-          assignees: benedict1337
