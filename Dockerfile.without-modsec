@@ -2,6 +2,14 @@ FROM alpine:latest as build
 
 ARG BUILD
 
+ARG NGX_MAINLINE_VER=1.25.3
+ARG QUICTLS_VER=openssl-3.1.4+quic
+ARG BROTLI_VER=master
+ARG NGX_BROTLI=master
+ARG NGX_HEADERS_MORE=master
+ARG NGX_NJS=master
+ARG NGX_GEOIP2=master
+
 WORKDIR /src
 
 # Install the required packages
@@ -24,24 +32,22 @@ RUN apk add --no-cache \
         perl-dev \
         curl-dev \
         geoip-dev \
-        libmaxminddb-dev \
-        curl
+        libmaxminddb-dev 
 
    
-RUN git clone --recursive https://github.com/quictls/openssl --branch openssl-3.1.4+quic /src/openssl 
+RUN git clone --recursive https://github.com/quictls/openssl --branch $QUICTLS_VER /src/openssl 
 
 # Modules
 
-RUN (git clone --recursive https://github.com/google/ngx_brotli /src/ngx_brotli \
-        && git clone --recursive https://github.com/openresty/headers-more-nginx-module /src/headers-more-nginx-module \
-        && git clone --recursive https://github.com/nginx/njs /src/njs \
-        && git clone --recursive https://github.com/leev/ngx_http_geoip2_module /src/ngx_http_geoip2_module) 
+RUN (git clone --recursive https://github.com/google/ngx_brotli --branch $BROTLI_VER /src/ngx_brotli \
+        && git clone --recursive https://github.com/openresty/headers-more-nginx-module --branch $NGX_HEADERS_MORE /src/headers-more-nginx-module \
+        && git clone --recursive https://github.com/nginx/njs --branch $NGX_NJS /src/njs \
+        && git clone --recursive https://github.com/leev/ngx_http_geoip2_module --branch $NGX_GEOIP2 /src/ngx_http_geoip2_module) 
     
 # Nginx
 
-RUN (NGINX_MAINLINE_LATEST=$(curl -sSL https://benedict.systems/nginx-latest.php?mainline) \
-        && wget https://nginx.org/download/nginx-$NGINX_MAINLINE_LATEST.tar.gz -O - | tar xzC /src \
-        && mv /src/nginx-$NGINX_MAINLINE_LATEST /src/nginx \
+RUN (wget https://nginx.org/download/nginx-$NGX_MAINLINE_VER.tar.gz -O - | tar xzC /src \
+        && mv /src/nginx-$NGX_MAINLINE_VER /src/nginx \
         && wget https://raw.githubusercontent.com/nginx-modules/ngx_http_tls_dyn_size/master/nginx__dynamic_tls_records_1.25.1%2B.patch -O /src/nginx/dynamic_tls_records.patch \
         && sed -i "s|nginx/|NGINX-QuicTLS without ModSec/|g" /src/nginx/src/core/nginx.h \
         && sed -i "s|Server: nginx|Server: NGINX-QuicTLS without ModSec|g" /src/nginx/src/http/ngx_http_header_filter_module.c \

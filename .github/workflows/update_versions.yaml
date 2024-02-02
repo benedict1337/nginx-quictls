@@ -1,0 +1,275 @@
+name: NGINX-QuicTLS (Update versions)
+
+on:
+  push:
+    branches:
+      - latest
+    paths:
+      - Dockerfile
+      - Dockerfile.without-modsec
+  schedule:
+    - cron: "0 */24 * * *"
+  workflow_dispatch:
+
+jobs:
+  nginx:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Update NGX version
+        id: update_ngx
+        run: |
+          NGX_MAINLINE_VER=$(git ls-remote --refs --tags https://github.com/nginx/nginx.git \
+          | cut --delimiter='/' --fields=3  \
+          | sort -V \
+          | tail -1 \
+          | sed 's/^release-//')
+          echo ngx_ver=${NGX_MAINLINE_VER} >> $GITHUB_OUTPUT
+          sed -i "s|ARG NGX_MAINLINE_VER=.*|ARG NGX_MAINLINE_VER=${NGX_MAINLINE_VER}|g" Dockerfile
+          sed -i "s|ARG NGX_MAINLINE_VER=.*|ARG NGX_MAINLINE_VER=${NGX_MAINLINE_VER}|g" Dockerfile.without-modsec
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          signoff: true
+          delete-branch: true
+          committer: benedict.system - Update BOT <info@benedict.systems>
+          commit-message: Update NGINX Mainline version to ${{ steps.update_ngx.outputs.ngx_ver }}
+          title: Update NGINX Mainline version to ${{ steps.update_ngx.outputs.ngx_ver }}
+          body: Update NGINX Mainline version to ${{ steps.update_ngx.outputs.ngx_ver }}
+          branch: update-version-ngx-${{ steps.update_ngx.outputs.ngx_ver }}
+          base: latest
+          labels: dependencies
+          reviewers: benedict1337
+          assignees: benedict1337
+          changes: |
+            Dockerfile
+            Dockerfile.without-modsec
+  modsecurity:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Update ModSecurity version
+        id: update_modsec
+        run: |
+          MODSEC_VER=$(git ls-remote --refs --tags https://github.com/owasp-modsecurity/ModSecurity.git \
+          | cut --delimiter='/' --fields=3  \
+          | sort -V \
+          | tail -1)
+          echo modsec_ver=${MODSEC_VER} >> $GITHUB_OUTPUT
+          sed -i "s|ARG MODSEC_VER=.*|ARG MODSEC_VER=${MODSEC_VER}|g" Dockerfile
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          signoff: true
+          delete-branch: true
+          committer: benedict.system - Update BOT <info@benedict.systems>
+          commit-message: Update ModSecurity version to ${{ steps.update_modsec.outputs.modsec_ver }}
+          title: Update ModSecurity version to ${{ steps.update_modsec.outputs.modsec_ver }}
+          body: Update ModSecurity version to ${{ steps.update_modsec.outputs.modsec_ver }}
+          branch: update-version-modsec-${{ steps.update_modsec.outputs.modsec_ver }}
+          base: latest
+          labels: dependencies
+          reviewers: benedict1337
+          assignees: benedict1337
+          changes: |
+            Dockerfile
+  quictls:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Update QuicTLS version
+        id: update_quictls
+        run: |
+          QUICTLS_VER=$(git ls-remote --heads https://github.com/quictls/openssl.git openssl-*.*.*+quic \
+          | cut --delimiter='/' --fields=3  \
+          | sort -V \
+          | tail -1)
+          echo quictls_ver=${QUICTLS_VER} >> $GITHUB_OUTPUT
+          sed -i "s|ARG QUICTLS_VER=.*|ARG QUICTLS_VER=${QUICTLS_VER}|g" Dockerfile
+          sed -i "s|ARG QUICTLS_VER=.*|ARG QUICTLS_VER=${QUICTLS_VER}|g" Dockerfile.without-modsec
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          signoff: true
+          delete-branch: true
+          committer: benedict.system - Update BOT <info@benedict.systems>
+          commit-message: Update QuicTLS version to ${{ steps.update_quictls.outputs.quictls_ver }}
+          title: Update QuicTLS version to ${{ steps.update_quictls.outputs.quictls_ver }}
+          body: Update QuicTLS version to ${{ steps.update_quictls.outputs.quictls_ver }}
+          branch: update-version-quictls-${{ steps.update_quictls.outputs.quictls_ver }}
+          base: latest
+          labels: dependencies
+          reviewers: benedict1337
+          assignees: benedict1337
+          changes: |
+            Dockerfile
+            Dockerfile.without-modsec
+  brotli-module:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Update Brotli Module version
+        id: update_brotli
+        run: |
+          BROTLI_VER=$(git ls-remote --refs --tags https://github.com/google/ngx_brotli.git \
+          | cut --delimiter='/' --fields=3  \
+          | sort -V \
+          | tail -1)
+          echo brotli_ver=${BROTLI_VER} >> $GITHUB_OUTPUT
+          sed -i "s|ARG NGX_BROTLI=.*|ARG NGX_BROTLI=${BROTLI_VER}|g" Dockerfile
+          sed -i "s|ARG NGX_BROTLI=.*|ARG NGX_BROTLI=${BROTLI_VER}|g" Dockerfile.without-modsec
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          signoff: true
+          delete-branch: true
+          committer: benedict.system - Update BOT <info@benedict.systems>
+          commit-message: Update Brotli Module version to ${{ steps.update_brotli.outputs.brotli_ver }}
+          title: Update Brotli Module version to ${{ steps.update_brotli.outputs.brotli_ver }}
+          body: Update Brotli Module version to ${{ steps.update_brotli.outputs.brotli_ver }}
+          branch: update-version-brotli-${{ steps.update_brotli.outputs.brotli_ver }}
+          base: latest
+          labels: dependencies
+          reviewers: benedict1337
+          assignees: benedict1337
+          changes: |
+            Dockerfile
+            Dockerfile.without-modsec
+  headers_more-module:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Update Headers More Module version
+        id: update_headers_more
+        run: |
+          HEADERS_MORE_VER=$(git ls-remote --refs --tags https://github.com/openresty/headers-more-nginx-module.git \
+          | cut --delimiter='/' --fields=3  \
+          | sort -V \
+          | tail -1)
+          echo headers_more_ver=${HEADERS_MORE_VER} >> $GITHUB_OUTPUT
+          sed -i "s|ARG NGX_HEADERS_MORE=.*|ARG NGX_HEADERS_MORE=${HEADERS_MORE_VER}|g" Dockerfile
+          sed -i "s|ARG NGX_HEADERS_MORE=.*|ARG NGX_HEADERS_MORE=${HEADERS_MORE_VER}|g" Dockerfile.without-modsec
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          signoff: true
+          delete-branch: true
+          committer: benedict.system - Update BOT <info@benedict.systems>
+          commit-message: Update Headers More Module version to ${{ steps.update_headers_more.outputs.headers_more_ver }}
+          title: Update Headers More Module version to ${{ steps.update_headers_more.outputs.headers_more_ver }}
+          body: Update Headers More Module version to ${{ steps.update_headers_more.outputs.headers_more_ver }}
+          branch: update-version-headers_more-${{ steps.update_headers_more.outputs.headers_more_ver }}
+          base: latest
+          labels: dependencies
+          reviewers: benedict1337
+          assignees: benedict1337
+          changes: |
+            Dockerfile
+            Dockerfile.without-modsec
+  njs-module:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Update NJS Module version
+        id: update_njs
+        run: |
+          NJS_VER=$(git ls-remote --refs --tags https://github.com/nginx/njs.git \
+          | cut --delimiter='/' --fields=3  \
+          | sort -V \
+          | tail -1)
+          echo njs_ver=${NJS_VER} >> $GITHUB_OUTPUT
+          sed -i "s|ARG NGX_NJS=.*|ARG NGX_NJS=${NJS_VER}|g" Dockerfile
+          sed -i "s|ARG NGX_NJS=.*|ARG NGX_NJS=${NJS_VER}|g" Dockerfile.without-modsec
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          signoff: true
+          delete-branch: true
+          committer: benedict.system - Update BOT <info@benedict.systems>
+          commit-message: Update NJS Module version to ${{ steps.update_njs.outputs.njs_ver }}
+          title: Update NJS Module version to ${{ steps.update_njs.outputs.njs_ver }}
+          body: Update NJS Module version to ${{ steps.update_njs.outputs.njs_ver }}
+          branch: update-version-njs-${{ steps.update_njs.outputs.njs_ver }}
+          base: latest
+          labels: dependencies
+          reviewers: benedict1337
+          assignees: benedict1337
+          changes: |
+            Dockerfile
+            Dockerfile.without-modsec
+  ngx_modsec-module:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Update NGINX ModSecurity Module version
+        id: update_ngx_modsec
+        run: |
+          NGX_MODSEC_VER=$(git ls-remote --refs --tags https://github.com/SpiderLabs/ModSecurity-nginx.git \
+          | cut --delimiter='/' --fields=3  \
+          | sort -V \
+          | tail -1)
+          echo ngx_modsec_ver=${NGX_MODSEC_VER} >> $GITHUB_OUTPUT
+          sed -i "s|ARG NGX_MODSEC=.*|ARG NGX_MODSEC=${NGX_MODSEC_VER}|g" Dockerfile
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          signoff: true
+          delete-branch: true
+          committer: benedict.system - Update BOT <info@benedict.systems>
+          commit-message: Update NGINX ModSecurity Module version to ${{ steps.update_ngx_modsec.outputs.ngx_modsec_ver }}
+          title: Update NGINX ModSecurity Module version to ${{ steps.update_ngx_modsec.outputs.ngx_modsec_ver }}
+          body: Update NGINX ModSecurity Module version to ${{ steps.update_ngx_modsec.outputs.ngx_modsec_ver }}
+          branch: update-version-ngx_modsec-${{ steps.update_ngx_modsec.outputs.ngx_modsec_ver }}
+          base: latest
+          labels: dependencies
+          reviewers: benedict1337
+          assignees: benedict1337
+          changes: |
+            Dockerfile
+  geoip2-module:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Update GeoIP2 Module version
+        id: update_geoip2
+        run: |
+          GEOIP2_VER=$(git ls-remote --refs --tags https://github.com/leev/ngx_http_geoip2_module.git \
+          | cut --delimiter='/' --fields=3  \
+          | sort -V \
+          | tail -1)
+          echo geoip2_ver=${GEOIP2_VER} >> $GITHUB_OUTPUT
+          sed -i "s|ARG NGX_GEOIP2=.*|ARG NGX_GEOIP2=${GEOIP2_VER}|g" Dockerfile
+          sed -i "s|ARG NGX_GEOIP2=.*|ARG NGX_GEOIP2=${GEOIP2_VER}|g" Dockerfile.without-modsec
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          signoff: true
+          delete-branch: true
+          committer: benedict.system - Update BOT <info@benedict.systems>
+          commit-message: Update GeoIP2 Module version to ${{ steps.update_geoip2.outputs.geoip2_ver }}
+          title: Update GeoIP2 Module version to ${{ steps.update_geoip2.outputs.geoip2_ver }}
+          body: Update GeoIP2 Module version to ${{ steps.update_geoip2.outputs.geoip2_ver }}
+          branch: update-version-geoip2-${{ steps.update_geoip2.outputs.geoip2_ver }}
+          base: latest
+          labels: dependencies
+          reviewers: benedict1337
+          assignees: benedict1337
+          changes: |
+            Dockerfile
+            Dockerfile.without-modsec
