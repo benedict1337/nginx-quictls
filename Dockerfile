@@ -123,8 +123,7 @@ RUN cd /src/nginx \
     && make -j "$(nproc)" \
     && make -j "$(nproc)" install \
     && rm /src/nginx/*.patch \
-    && strip -s /usr/sbin/nginx \
-    && strip -s /usr/lib/nginx/modules/*.so
+    && strip -s /usr/sbin/nginx 
 
 FROM python:alpine
 
