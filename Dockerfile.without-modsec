@@ -7,7 +7,7 @@ ARG QUICTLS_VER=openssl-3.1.4+quic
 ARG BROTLI_VER=master
 ARG NGX_BROTLI=master
 ARG NGX_HEADERS_MORE=master
-ARG NGX_NJS=master
+ARG NGX_NJS=0.8.2
 ARG NGX_GEOIP2=master
 
 WORKDIR /src
