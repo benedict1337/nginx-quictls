@@ -9,7 +9,6 @@ on:
       - Dockerfile.without-modsec
   schedule:
     - cron: "0 */24 * * *"
-  workflow_dispatch:
 
 jobs:
   nginx:
@@ -91,33 +90,6 @@ jobs:
           title: Update QuicTLS version to ${{ steps.update_quictls.outputs.quictls_ver }}
           body: Update QuicTLS version to ${{ steps.update_quictls.outputs.quictls_ver }}
           branch: update-version-quictls-${{ steps.update_quictls.outputs.quictls_ver }}
-          base: latest
-          labels: dependencies
-  brotli-module:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Update Brotli Module version
-        id: update_brotli
-        run: |
-          BROTLI_VER=$(git ls-remote --refs --tags https://github.com/google/ngx_brotli.git \
-          | cut --delimiter='/' --fields=3  \
-          | sort -V \
-          | tail -1)
-          echo brotli_ver=${BROTLI_VER} >> $GITHUB_OUTPUT
-          sed -i "s|ARG NGX_BROTLI=.*|ARG NGX_BROTLI=${BROTLI_VER}|g" Dockerfile
-          sed -i "s|ARG NGX_BROTLI=.*|ARG NGX_BROTLI=${BROTLI_VER}|g" Dockerfile.without-modsec
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v6.0.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          signoff: true
-          delete-branch: true
-          commit-message: Update Brotli Module version to ${{ steps.update_brotli.outputs.brotli_ver }}
-          title: Update Brotli Module version to ${{ steps.update_brotli.outputs.brotli_ver }}
-          body: Update Brotli Module version to ${{ steps.update_brotli.outputs.brotli_ver }}
-          branch: update-version-brotli-${{ steps.update_brotli.outputs.brotli_ver }}
           base: latest
           labels: dependencies
   headers_more-module:

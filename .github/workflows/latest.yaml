@@ -73,10 +73,10 @@ jobs:
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
           outputs: type=image,name=${{ env.GHCR_IMAGE }},push-by-digest=true,name-canonical=true,push=true
-          cache-from: type=registry,ref=docker.io/${{ secrets.DOCKERHUB_USERNAME }}/nginx-quictls:latest
+          cache-from: type=registry,ref=ghcr.io/${{ github.repository }}:latest
           cache-to: type=inline
           build-args: |
-            "BUILD=${{ github.sha }}"
+            "BUILD=${{ github.sha }}-${{ steps.meta.outputs.version }}"
       - name: Export digest
         run: |
           mkdir -p /tmp/digests
